@@ -8,7 +8,6 @@ const connection = require('./knexfile')[process.env.NODE_ENV || 'development']
 const database = require('knex')(connection)
 
 
-const v3 = require('node-hue-api')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
@@ -117,40 +116,12 @@ app.post('/login', (request, response) => {
 })
 
 
-app.put('/establishBridge', (request, response) => {
-
-    const { username } = request.body 
-    
-    const APPLICATION_NAME = 'node-hue-api'
-        , DEVICE_NAME = 'my-device'
-  
-    v3.discovery.nupnpSearch()
-        .then(searchResults => {
-            const host = searchResults[0].ipaddress
-            insertAddressIntoDatabase(username, host)
-            return v3.api.createLocal(host).connect()
-        })
-        .then(api => {
-            return api.users.createUser(APPLICATION_NAME, DEVICE_NAME)
-        })
-        .then(createdUser => {
-            const newHueUsername = createdUser.username
-            insertUsernameIntoDatabase(username, newHueUsername)
-        })
-        .catch(err => {
-            console.error(`Unexpected Error: ${err}`)
-        })
-
-})
-
-
 function insertUsernameIntoDatabase(username, hueUsername) {
 
     database('users')
         .select()
         .where("username", username )
         .update({"hueUsername": hueUsername})
-        .then(console.log('Successful Hue Username Update'))
         .catch(error => console.log(error.message))
 
 }
@@ -162,7 +133,6 @@ function insertAddressIntoDatabase(username, hueAddress) {
         .select()
         .where("username", username )
         .update({"hueAddress": hueAddress})
-        .then(console.log('Successful Hue Address Update'))
-        .catch(error => console.log('Unsuccessful Hue Address Update'))
+        .catch(error => console.log(error.message))
         
 }

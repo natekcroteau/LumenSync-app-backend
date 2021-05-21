@@ -115,24 +115,33 @@ app.post('/login', (request, response) => {
 
 })
 
+app.post('/establishBridge', (request, response) => {
 
-function insertUsernameIntoDatabase(username, hueUsername) {
+    const {username, hueAddress, hueUsername} = request.body
+
+    insertHueAddressIntoDatabase(username, hueAddress)
+    insertHueUsernameIntoDatabase(username, hueUsername)
+
+    
+})
+
+function insertHueUsernameIntoDatabase(username, hueUsername) {
 
     database('users')
         .select()
         .where("username", username )
         .update({"hueUsername": hueUsername})
         .catch(error => console.log(error.message))
-
+        
 }
 
 
-function insertAddressIntoDatabase(username, hueAddress) {
+function insertHueAddressIntoDatabase(username, hueAddress) {
 
     database('users')
         .select()
         .where("username", username )
         .update({"hueAddress": hueAddress})
         .catch(error => console.log(error.message))
-        
+
 }

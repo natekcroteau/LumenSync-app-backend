@@ -12,6 +12,9 @@ LumenSync is a minimalistic Phillips Hue lightbulb control and scheduling applic
 ## Technologies
 
 * Node - v 15.13.0
+  * Express
+  * KNEX
+  * cors
   * jsonwebtoken
   * bcrypt
 
